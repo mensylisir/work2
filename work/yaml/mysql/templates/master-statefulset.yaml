@@ -1,0 +1,144 @@
+---
+# Source: mysql/templates/master-statefulset.yaml
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: mysql-master
+  labels:
+    app: "mysql"
+    chart: mysql-5.0.6
+    component: "master"
+    release: "mysql"
+    heritage: "Tiller"
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+      release: "mysql"
+      component: "master"
+  serviceName: "mysql-master"
+  replicas: 1
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: "mysql"
+        chart: mysql-5.0.6
+        component: "master"
+        release: "mysql"
+        heritage: "Tiller"
+      annotations:
+        prometheus.io/port: "9104"
+        prometheus.io/scrape: "true"
+        
+    spec:
+      securityContext:
+        fsGroup: 1001
+        runAsUser: 1001
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 1
+            podAffinityTerm:
+              topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app: "mysql"
+                  release: "mysql"      
+      containers:
+      - name: "mysql"
+        image: reg.k8s.rf.io/daas/mysql:8.0.16
+        imagePullPolicy: "IfNotPresent"
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql
+              key: mysql-root-password
+        - name: MYSQL_DATABASE
+          value: "my_database"
+        - name: MYSQL_REPLICATION_MODE
+          value: "master"
+        - name: MYSQL_REPLICATION_USER
+          value: "replicator"
+        - name: MYSQL_REPLICATION_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql
+              key: mysql-replication-password
+        ports:
+        - name: mysql
+          containerPort: 3306
+        livenessProbe:
+          exec:
+            command: ["sh", "-c", "exec mysqladmin status -uroot -p$MYSQL_ROOT_PASSWORD"]
+          initialDelaySeconds: 120
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command: ["sh", "-c", "exec mysqladmin status -uroot -p$MYSQL_ROOT_PASSWORD"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 1
+          successThreshold: 1
+          failureThreshold: 3
+        resources:
+          {}
+          
+        volumeMounts:
+        - name: data
+          mountPath: /bitnami/mysql
+        - name: config
+          mountPath: /opt/bitnami/mysql/conf/my.cnf
+          subPath: my.cnf
+      - name: metrics
+        image: reg.k8s.rf.io/daas/mysqld-exporter:v0.10.0
+        imagePullPolicy: "IfNotPresent"
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql
+              key: mysql-root-password
+        command: [ 'sh', '-c', 'DATA_SOURCE_NAME="root:$MYSQL_ROOT_PASSWORD@(localhost:3306)/" /bin/mysqld_exporter' ]
+        ports:
+        - name: metrics
+          containerPort: 9104
+        livenessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 15
+          timeoutSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /metrics
+            port: metrics
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+        resources:
+          {}
+          
+      volumes:
+        - name: config
+          configMap:
+            name: mysql-master
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          app: "mysql"
+          component: "master"
+          release: "mysql"
+          heritage: "Tiller"
+      spec:
+        accessModes:
+          - "ReadWriteOnce"
+        resources:
+          requests:
+            storage: "8Gi"
+        storageClassName: "fast-disks"

@@ -1,0 +1,11 @@
+2020-11-04 09:02:28.398 UTC CONFIG [/apps/opendj/db/cftest] Starting TOTAL_RECOVERY Recovery Info null useMinReplicatedNodeId=0 useMaxNodeId=0 useMinReplicatedDbId=0 useMaxDbId=0 useMinReplicatedTxnId=0 useMaxTxnId=0
+2020-11-04 09:02:28.400 UTC CONFIG [/apps/opendj/db/cftest] Recovery w/no files.
+2020-11-04 09:02:28.426 UTC CONFIG [/apps/opendj/db/cftest] Starting POPULATE_UP Recovery Info null useMinReplicatedNodeId=0 useMaxNodeId=0 useMinReplicatedDbId=0 useMaxDbId=0 useMinReplicatedTxnId=0 useMaxTxnId=0
+2020-11-04 09:02:28.455 UTC CONFIG [/apps/opendj/db/cftest] Stopping POPULATE_UP Recovery Info null useMinReplicatedNodeId=0 useMaxNodeId=0 useMinReplicatedDbId=0 useMaxDbId=0 useMinReplicatedTxnId=0 useMaxTxnId=0
+2020-11-04 09:02:28.456 UTC CONFIG [/apps/opendj/db/cftest] Starting REMOVE_TEMP_DBS Recovery Info null useMinReplicatedNodeId=0 useMaxNodeId=0 useMinReplicatedDbId=0 useMaxDbId=0 useMinReplicatedTxnId=0 useMaxTxnId=0
+2020-11-04 09:02:28.456 UTC CONFIG [/apps/opendj/db/cftest] Stopping REMOVE_TEMP_DBS Recovery Info null useMinReplicatedNodeId=0 useMaxNodeId=0 useMinReplicatedDbId=0 useMaxDbId=0 useMinReplicatedTxnId=0 useMaxTxnId=0
+2020-11-04 09:02:28.456 UTC CONFIG [/apps/opendj/db/cftest] Starting CKPT Recovery Info null useMinReplicatedNodeId=0 useMaxNodeId=0 useMinReplicatedDbId=0 useMaxDbId=0 useMinReplicatedTxnId=0 useMaxTxnId=0
+2020-11-04 09:02:28.489 UTC CONFIG [/apps/opendj/db/cftest] Checkpoint 1: source=recovery success=true nFullINFlushThisRun=4 nDeltaINFlushThisRun=0
+2020-11-04 09:02:28.491 UTC CONFIG [/apps/opendj/db/cftest] Stopping CKPT Recovery Info null useMinReplicatedNodeId=0 useMaxNodeId=0 useMinReplicatedDbId=0 useMaxDbId=0 useMinReplicatedTxnId=0 useMaxTxnId=0
+2020-11-04 09:02:28.491 UTC CONFIG [/apps/opendj/db/cftest] Stopping TOTAL_RECOVERY Recovery Info null useMinReplicatedNodeId=0 useMaxNodeId=0 useMinReplicatedDbId=0 useMaxDbId=0 useMinReplicatedTxnId=0 useMaxTxnId=0
+2020-11-04 09:02:28.502 UTC CONFIG [/apps/opendj/db/cftest] Stopping TOTAL_ENV_OPEN Recovery Info null useMinReplicatedNodeId=0 useMaxNodeId=0 useMinReplicatedDbId=0 useMaxDbId=0 useMinReplicatedTxnId=0 useMaxTxnId=0

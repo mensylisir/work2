@@ -1,0 +1,28 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jnord
+Build-Jdk: 1.8.0_221
+Extension-Name: kubernetes-credentials-provider
+Specification-Title: Provides a credentials store backed by Kubernetes.
+Implementation-Title: kubernetes-credentials-provider
+Implementation-Version: 0.15
+Group-Id: com.cloudbees.jenkins.plugins
+Short-Name: kubernetes-credentials-provider
+Long-Name: Kubernetes Credentials Provider
+Url: https://github.com/jenkinsci/kubernetes-credentials-provider-plug
+ in/blob/master/docs/README.md
+Minimum-Java-Version: 1.8
+Plugin-Version: 0.15
+Hudson-Version: 2.190.1
+Jenkins-Version: 2.190.1
+Plugin-Dependencies: aws-credentials:1.26;resolution:=optional,credent
+ ials:2.2.0,kubernetes-client-api:4.6.0-2,openstack-cloud:2.47;resolut
+ ion:=optional,plain-credentials:1.4;resolution:=optional,ssh-credenti
+ als:1.18.1;resolution:=optional,variant:1.1
+Plugin-Developers: James Nord:teilo:,Steve Arch:agentgonzo:
+Plugin-License-Name: MIT License
+Plugin-License-Url: http://www.opensource.org/licenses/mit-license.php
+Plugin-ScmUrl: https://github.com/jenkinsci/kubernetes-credentials-pro
+ vider-plugin
+

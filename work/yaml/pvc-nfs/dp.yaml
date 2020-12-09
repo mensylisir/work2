@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inner
+  namespace: zjk
+spec:
+   replicas: 1
+   strategy:
+     type: RollingUpdate
+   selector:
+     matchLabels:
+       app: inner
+       group: dev
+   template:
+     metadata:
+       labels:
+         app: inner
+         group: dev
+     spec:
+       containers:
+       - name: inner
+         image: harbor.rdev.tech/gt_zjk/inner:45
+         imagePullPolicy: Always
+         ports:
+         - name: http
+           containerPort: 8001
+           protocol: TCP
+         args:
+         - -c
+         - sh startup.sh;while true;do echo running;sleep 10;done
+         command:
+         - /bin/bash
+         volumeMounts:
+         - name: nfswebdir
+           mountPath: /rmemis
+       volumes:
+       - name: nfswebdir
+         persistentVolumeClaim:
+           claimName: nfswebdir

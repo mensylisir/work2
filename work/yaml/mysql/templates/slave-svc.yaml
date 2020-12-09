@@ -1,0 +1,26 @@
+---
+# Source: mysql/templates/slave-svc.yaml
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-slave
+  labels:
+    app: "mysql"
+    chart: mysql-5.0.6
+    component: "slave"
+    release: "mysql"
+    heritage: "Tiller"
+spec:
+  type: ClusterIP
+  ports:
+  - name: mysql
+    port: 3306
+    targetPort: mysql
+  - name: metrics
+    port: 9104
+    targetPort: metrics
+  selector:
+    app: "mysql"
+    component: "slave"
+    release: "mysql"

@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: phpldapadmin
+  name: phpldapadmin
+spec:
+  selector:
+    matchLabels:
+      io.kompose.service: phpldapadmin
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        io.kompose.service: phpldapadmin
+    spec:
+      containers:
+      - env:
+        - name: PHPLDAPADMIN_HTTPS
+          value: "false"
+        - name: PHPLDAPADMIN_LDAP_HOSTS
+          value: opendj-svc
+        image: 192.168.106.196:8081/opendj/phpldapadmin:latest
+        name: phpldapadmin
+        ports:
+        - containerPort: 80
+        resources: {}
+      restartPolicy: Always
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: phpldapadmin
+  name: phpadmin
+spec:
+  ports:
+  - nodePort: 31467
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    io.kompose.service: phpldapadmin
+  type: NodePort
+
