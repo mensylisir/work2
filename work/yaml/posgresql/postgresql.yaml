@@ -1,0 +1,95 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: gitlabpvc2
+  namespace: gitlab
+  labels:
+    app: postgresql
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "4Gi"
+  storageClassName: "nfs-client"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql
+  namespace: gitlab
+  labels:
+    name: postgresql
+spec:
+  selector:
+    matchLabels:
+       name: postgresql
+  template:
+    metadata:
+      name: postgresql
+      labels:
+        name: postgresql
+    spec:
+      containers:
+      - name: postgresql
+        image: 192.168.80.54:8081/library/postgres:9.6.8
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: POSTGRES_USER
+          value: gitlab
+        - name: PGUSER
+          value: gitlab
+        - name: POSTGRES_PASSWORD
+          value: passw0rd
+        - name: POSTGRES_DB
+          value: gitlab_production
+        - name: POSTGRES_INITDB_ARGS
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        - name: DB_EXTENSION
+          value: pg_trgm
+        ports:
+        - name: postgres
+          containerPort: 5432
+        volumeMounts:
+        - mountPath: /var/lib/postgresql
+          name: data
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -h
+            - localhost
+            - -U
+            - postgres
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -h
+            - localhost
+            - -U
+            - postgres
+          initialDelaySeconds: 5
+          timeoutSeconds: 1
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: gitlabpvc2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql
+  namespace: gitlab
+  labels:
+    name: postgresql
+spec:
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: postgres
+  selector:
+    name: postgresql
