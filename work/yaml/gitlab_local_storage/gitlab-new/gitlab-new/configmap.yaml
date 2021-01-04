@@ -1,0 +1,49 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  data:
+    gitlab_omnibus_config: |
+      external_url 'https://gitlab-dev3.rdev.tech';
+      gitlab_rails['gitlab_shell_ssh_port'] = 30222;
+      nginx['redirect_http_to_https'] = true;
+      nginx['ssl_certificate'] = "/etc/gitlab/ssl/gitlab-server.pem";
+      nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab-server-key.pem";
+      gitlab_rails['omniauth_enabled'] = true;
+      gitlab_rails['omniauth_allow_single_sign_on'] = ['saml'];
+      gitlab_rails['omniauth_block_auto_created_users'] = false;
+      gitlab_rails['omniauth_auto_link_saml_user'] = true;
+      gitlab_rails['omniauth_providers'] = [
+        {
+          name: 'saml',
+          groups_attribute: 'Groups',
+          required_groups: ['Admin'],
+          args: {
+                   assertion_consumer_service_url: 'https://gitlab-dev3.rdev.tech/users/auth/saml/callback',
+                   idp_cert_fingerprint: '68:87:CF:A6:DF:9D:EB:06:77:50:87:7E:9E:5D:E3:09:C0:F0:70:7C',
+                   idp_sso_target_url: 'http://gitlab-dev3.rdev.tech/auth/realms/demo/protocol/saml/clients/gitlab-dev3.rdev.tech',
+                   issuer: 'gitlab-dev3.rdev.tech',
+                   attribute_statements: {
+                     first_name: ['first_name'],
+                     last_name: ['last_name'],
+                     name: ['name'],
+                     username: ['name'],
+                     email: ['email'] },
+                   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+                 },
+          label: 'Company Login' # optional label for SAML login button, defaults to "Saml"
+        }
+      ];
+  kind: ConfigMap
+  metadata:
+    creationTimestamp: "2020-12-25T05:47:17Z"
+    labels:
+      app: gitlab-cm
+    name: gitlab-cm
+    namespace: gitlab2
+    resourceVersion: "147302180"
+    selfLink: /api/v1/namespaces/gitlab2/configmaps/gitlab-cm
+    uid: d7f1123f-29ab-40ff-8a08-72a6ec281747
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

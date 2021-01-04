@@ -1,0 +1,105 @@
+apiVersion: v1
+items:
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      kubesphere.io/creator: feng
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: cluster.local/foolish-ragdoll-nfs-client-provisioner
+    creationTimestamp: "2020-12-25T06:28:16Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    labels:
+      app: gitlab-config
+    name: gitlab-config
+    namespace: gitlab3
+    resourceVersion: "147254457"
+    selfLink: /api/v1/namespaces/gitlab2/persistentvolumeclaims/gitlab-config
+    uid: 5f7824bf-41f0-4f20-bad9-d85224501e79
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+    storageClassName: nfs-client
+    volumeMode: Filesystem
+    volumeName: pvc-5f7824bf-41f0-4f20-bad9-d85224501e79
+  status:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 10Gi
+    phase: Bound
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      kubesphere.io/creator: feng
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: cluster.local/foolish-ragdoll-nfs-client-provisioner
+    creationTimestamp: "2020-12-25T06:28:34Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    labels:
+      app: gitlab-data
+    name: gitlab-data
+    namespace: gitlab3
+    resourceVersion: "147254735"
+    selfLink: /api/v1/namespaces/gitlab3/persistentvolumeclaims/gitlab-data
+    uid: ba94c859-67f3-49fb-8a1e-96ae797a01a5
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+    storageClassName: nfs-client
+    volumeMode: Filesystem
+    volumeName: pvc-ba94c859-67f3-49fb-8a1e-96ae797a01a5
+  status:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 10Gi
+    phase: Bound
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      kubesphere.io/creator: feng
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+      volume.beta.kubernetes.io/storage-provisioner: cluster.local/foolish-ragdoll-nfs-client-provisioner
+    creationTimestamp: "2020-12-25T06:28:28Z"
+    finalizers:
+    - kubernetes.io/pvc-protection
+    labels:
+      app: gitlab-logs
+    name: gitlab-logs
+    namespace: gitlab2
+    resourceVersion: "147254660"
+    selfLink: /api/v1/namespaces/gitlab2/persistentvolumeclaims/gitlab-logs
+    uid: 005856bb-16bf-4ed6-9fa7-ba727b1025a2
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 10Gi
+    storageClassName: nfs-client
+    volumeMode: Filesystem
+    volumeName: pvc-005856bb-16bf-4ed6-9fa7-ba727b1025a2
+  status:
+    accessModes:
+    - ReadWriteOnce
+    capacity:
+      storage: 10Gi
+    phase: Bound
+kind: List
+metadata:
+  resourceVersion: ""
+  selfLink: ""

@@ -1,0 +1,50 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: argo-backup
+  namespace: argocd
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "50Gi"
+  storageClassName: "nfs-client-3"
+---
+kind: CronJob
+apiVersion: batch/v1beta1
+metadata:
+  name: argo-backup
+  namespace: argocd
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          volumes:
+            - name: volume-backup
+              persistentVolumeClaim:
+                claimName: argo-backup
+          containers:
+            - name: argo-backup
+              image: 192.168.80.54:8081/library/argoproj/argocd:v1.7.9
+              command:
+                - argocd-util
+                - export
+                - -o
+                - /backup/argo-config.yaml
+              resources: {}
+              volumeMounts:
+                - name: volume-backup
+                  mountPath: /backup
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+              imagePullPolicy: IfNotPresent
+          restartPolicy: Never
+          serviceAccountName: argocd-server
+          terminationGracePeriodSeconds: 30
+          dnsPolicy: ClusterFirst
+          securityContext: {}
+          schedulerName: default-scheduler
+

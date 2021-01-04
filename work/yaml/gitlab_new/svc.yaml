@@ -1,0 +1,86 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: gitlab-redis
+  namespace: gitlab-dev
+  labels:
+    app: gitlab-redis
+    chart: redis-0.9.0
+    heritage: Tiller
+    release: gitlab
+spec:
+  ports:
+    - name: redis
+      protocol: TCP
+      port: 6379
+      targetPort: redis
+  selector:
+    app: gitlab-redis
+  type: ClusterIP
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: gitlab-postgresql
+  namespace: gitlab-dev
+  labels:
+    app: gitlab-postgresql
+    chart: postgresql-0.8.1
+    heritage: Tiller
+    release: gitlab
+spec:
+  ports:
+    - name: postgresql
+      protocol: TCP
+      port: 5432
+      targetPort: postgresql
+  selector:
+    app: gitlab-postgresql
+  type: ClusterIP
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: gitlab-gitlab-ce
+  namespace: gitlab-dev
+  labels:
+    app: gitlab-gitlab-ce
+    chart: gitlab-ce-0.2.2
+    heritage: Tiller
+    release: gitlab
+spec:
+  ports:
+    - name: ssh
+      protocol: TCP
+      port: 22
+      targetPort: ssh
+      nodePort: 31146
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: http
+      nodePort: 30864
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: https
+      nodePort: 30806
+  selector:
+    app: gitlab-gitlab-ce
+  type: NodePort
+  externalTrafficPolicy: Cluster
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    ingress-whitelist: "*.rdev.tech"
+  name: redmine
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: redmine
+spec:
+  rules:
+  - host: redmine-dev.rdev.tech
+    http:
+      paths:
+      - backend:
+          serviceName: redmine
+          servicePort: 80
+  tls:
+  - hosts:
+    - redmine-dev.rdev.tech
+    secretName: redmine-dev-tls-pem
+---        
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: redmine
+subsets:
+  - addresses:
+      - ip: 192.168.71.68
+    ports:
+      - port: 10083
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redmine
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 10083

@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    ingress-whitelist: "*.rdev.tech"
+  name: metersphere
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: metersphere
+spec:
+  rules:
+  - host: metersphere-dev.rdev.tech
+    http:
+      paths:
+      - backend:
+          serviceName: metersphere
+          servicePort: 80
+  tls:
+  - hosts:
+    - metersphere-dev.rdev.tech
+    secretName: metersphere-dev-tls-pem
+---        
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: metersphere
+subsets:
+  - addresses:
+      - ip: 192.168.80.80
+    ports:
+      - port: 8081
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metersphere
+spec:
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8081

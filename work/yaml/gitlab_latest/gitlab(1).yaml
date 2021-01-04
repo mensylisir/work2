@@ -1,0 +1,115 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: gitlab-gitlab-ce
+  namespace: gitlab
+  labels:
+    app: gitlab-gitlab-ce
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitlab-gitlab-ce
+  template:
+    metadata:
+      labels:
+        app: gitlab-gitlab-ce
+    spec:
+      volumes:
+        - name: gitlab-data
+          persistentVolumeClaim:
+            claimName: gitlab-data
+        - name: gitlab-tls
+          secret:
+            secretName: gitlab-tls-pem
+            defaultMode: 420
+      containers:
+        - name: gitlab-gitlab-ce
+          image: 'reg.k8s.rf.io/gitlab/gitlab-ce:13.6.0'
+          ports:
+            - name: ssh
+              containerPort: 22
+              protocol: TCP
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+          env:
+            - name: GITLAB_OMNIBUS_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: gitlab-gitlab-ce
+                  key: gitlab_omnibus_config
+            - name: DB_TYPE
+              value: postgres
+            - name: GITLAB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-gitlab-ce
+                  key: gitlab-root-password
+            - name: EXTERNAL_URL
+              value: 'https://gitlab.k8s-rf.io/'
+            - name: DB_HOST
+              value: gitlab-postgresql.gitlab
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-gitlab-ce
+                  key: db-user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-gitlab-ce
+                  key: db-password
+            - name: DB_DATABASE
+              value: gitlab
+            - name: REDIS_HOST
+              value: gitlab-redis.gitlab
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-redis
+                  key: redis-password
+          resources: {}
+          volumeMounts:
+            - name: gitlab-tls
+              mountPath: /etc/gitlab/ssl
+            - name: gitlab-data
+              mountPath: /var/opt/gitlab
+          livenessProbe:
+            httpGet:
+              path: /help
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 200
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 10
+          readinessProbe:
+            httpGet:
+              path: /help
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 30
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+          securityContext:
+            privileged: true
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  revisionHistoryLimit: 2147483647
+  progressDeadlineSeconds: 2147483647

@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    ingress-whitelist: "*.rdev.tech"
+  creationTimestamp: "2020-12-10T01:10:22Z"
+  managedFields:
+  - apiVersion: v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:status:
+        f:phase: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-12-10T01:10:22Z"
+  name: argocd
+  resourceVersion: "851399"
+  selfLink: /api/v1/namespaces/argocd
+  uid: a19904bf-cefc-4e9c-b673-f180cae603d9
+spec:
+  finalizers:
+  - kubernetes
+status:
+  phase: Active

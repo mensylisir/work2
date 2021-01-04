@@ -1,0 +1,24 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: gitlab
+  namespace: gitlab-dev2
+  labels:
+    app: gitlab
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/secure-backends: 'true'
+    nginx.ingress.kubernetes.io/ssl-passthrough: 'true'
+spec:
+  rules:
+    - host: gitlab-dev2.rdev.tech
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: gitlab-gitlab-ce
+              servicePort: 443
+  tls:
+  - hosts:
+    - gitlab-dev2.rdev.tech
+    secretName: gitlab-dev2-tls-pem

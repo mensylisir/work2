@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubesphere.io/serviceType: statelessservice
+  creationTimestamp: "2020-12-25T05:37:51Z"
+  labels:
+    app: gitlab
+  name: gitlab
+  namespace: gitlab2
+  resourceVersion: "147269813"
+  selfLink: /api/v1/namespaces/gitlab2/services/gitlab
+  uid: 61b8850a-441e-4f01-84e7-c09fb037e541
+spec:
+  clusterIP: 10.233.5.62
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: tcp-22
+    nodePort: 30222
+    port: 22
+    protocol: TCP
+    targetPort: 22
+  - name: tcp-443
+    nodePort: 31790
+    port: 443
+    protocol: TCP
+    targetPort: 443
+  - name: tcp-80
+    nodePort: 32041
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: gitlab
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
+  type: NodePort
+status:
+  loadBalancer: {}

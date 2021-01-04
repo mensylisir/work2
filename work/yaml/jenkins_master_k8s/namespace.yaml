@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    ingress-whitelist: "*.rdev.tech"
+  name: jenkins
+  labels:
+    name: jenkins
