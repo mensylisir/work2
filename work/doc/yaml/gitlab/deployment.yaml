@@ -1,0 +1,316 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: gitlab-redis
+  namespace: gitlab-dev
+  labels:
+    app: gitlab-redis
+    chart: redis-0.9.0
+    heritage: Tiller
+    release: gitlab
+  annotations:
+    deployment.kubernetes.io/revision: '1'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitlab-redis
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: gitlab-redis
+    spec:
+      volumes:
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: gitlab-redis
+      containers:
+        - name: gitlab-redis
+          image: '192.168.80.54:8081/bitnami/redis:3.2.9-r2'
+          ports:
+            - name: redis
+              containerPort: 6379
+              protocol: TCP
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-redis
+                  key: redis-password
+          resources:
+            requests:
+              cpu: 100m
+              memory: 1Gi
+          volumeMounts:
+            - name: redis-data
+              mountPath: /bitnami/redis
+          livenessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - redis-cli
+                - ping
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  revisionHistoryLimit: 2147483647
+  progressDeadlineSeconds: 2147483647
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: gitlab-postgresql
+  namespace: gitlab-dev
+  labels:
+    app: gitlab-postgresql
+    chart: postgresql-0.8.1
+    heritage: Tiller
+    release: gitlab
+  annotations:
+    deployment.kubernetes.io/revision: '1'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitlab-postgresql
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: gitlab-postgresql
+    spec:
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: gitlab-postgresql
+      containers:
+        - name: gitlab-postgresql
+          image: '192.168.80.54:8081/library/postgres:9.6'
+          ports:
+            - name: postgresql
+              containerPort: 5432
+              protocol: TCP
+          env:
+            - name: POSTGRES_USER
+              value: gitlab
+            - name: PGUSER
+              value: gitlab
+            - name: POSTGRES_DB
+              value: gitlab
+            - name: POSTGRES_INITDB_ARGS
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-postgresql
+                  key: postgres-password
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data/pgdata
+              subPath: postgresql-db
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - '-c'
+                - exec pg_isready --host $POD_IP
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 6
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - '-c'
+                - exec pg_isready --host $POD_IP
+            initialDelaySeconds: 5
+            timeoutSeconds: 3
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: IfNotPresent
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  revisionHistoryLimit: 2147483647
+  progressDeadlineSeconds: 2147483647
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: gitlab-gitlab-ce
+  namespace: gitlab-dev
+  labels:
+    app: gitlab-gitlab-ce
+    chart: gitlab-ce-0.2.2
+    heritage: Tiller
+    release: gitlab
+  annotations:
+    deployment.kubernetes.io/revision: '27'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitlab-gitlab-ce
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: gitlab-gitlab-ce
+      annotations:
+        kubesphere.io/restartedAt: '2020-12-15T06:29:23.558Z'
+        logging.kubesphere.io/logsidecar-config: '{}'
+    spec:
+      volumes:
+        - name: gitlab-etc
+          persistentVolumeClaim:
+            claimName: gitlab-gitlab-ce-etc
+        - name: gitlab-data
+          persistentVolumeClaim:
+            claimName: gitlab-gitlab-ce-data
+        - name: volume-u9gjxx
+          secret:
+            secretName: gitlab-tls-pem
+            defaultMode: 420
+      containers:
+        - name: gitlab-gitlab-ce
+          image: '192.168.80.54:8081/library/gitlab/gitlab-ce:9.4.1-ce.1'
+          ports:
+            - name: ssh
+              containerPort: 22
+              protocol: TCP
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: https
+              containerPort: 443
+              protocol: TCP
+          env:
+            - name: GITLAB_OMNIBUS_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  name: gitlab-gitlab-ce
+                  key: gitlab_omnibus_config
+            - name: GITLAB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-gitlab-ce
+                  key: gitlab-root-password
+            - name: EXTERNAL_URL
+              value: 'https://gitlab.rdev.tech/'
+            - name: DB_HOST
+              value: gitlab-postgresql.gitlab-dev
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-gitlab-ce
+                  key: db-user
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-gitlab-ce
+                  key: db-password
+            - name: DB_DATABASE
+              value: gitlab
+            - name: REDIS_HOST
+              value: gitlab-redis.gitlab-dev
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-redis
+                  key: redis-password
+          resources: {}
+          volumeMounts:
+            - name: gitlab-etc
+              mountPath: /etc/gitlab
+            - name: gitlab-data
+              mountPath: /gitlab-data
+            - name: volume-u9gjxx
+              mountPath: /etc/gitlab/ssl
+          livenessProbe:
+            httpGet:
+              path: /help
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 200
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 10
+          readinessProbe:
+            httpGet:
+              path: /help
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 120
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+          securityContext:
+            privileged: true
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  revisionHistoryLimit: 2147483647
+  progressDeadlineSeconds: 2147483647
+
+
+
+

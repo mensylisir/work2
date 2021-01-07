@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: jenkins
+  labels:
+    k8s-app: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: jenkins
+  template:
+    metadata:
+      labels:
+        k8s-app: jenkins
+    spec:
+      containers:
+      - name: jenkins
+        image: 192.168.80.54:8081/library/jenkins/jenkins:v1.0.1_alpha
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - name: jenkins-home
+          mountPath: /var/jenkins_home
+        - name: maven-repository
+          mountPath: /opt/maven/repository
+        - name: docker
+          mountPath: /usr/bin/docker
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+        ports:
+        - containerPort: 8080
+        - containerPort: 50000
+        env:
+          - name: 'TZ'
+            value: "Asia/Shanghai"
+      volumes:
+        - name: jenkins-home
+          hostPath:
+            path: /opt/jenkins_home
+        - name: maven-repository
+          hostPath:
+            path: /opt/maven/repository
+        - name: docker
+          hostPath:
+            path: /usr/bin/docker
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+      serviceAccountName: jenkins-admin
