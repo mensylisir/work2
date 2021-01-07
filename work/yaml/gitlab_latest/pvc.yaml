@@ -1,6 +1,34 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
+  name: gitlab-config-pvc
+  namespace: gitlab-dev2
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "50Gi"
+  storageClassName: "nfs-client-3"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: gitlab-log-pvc
+  namespace: gitlab-dev2
+  labels:
+    app: gitlab-postgresql
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "50Gi"
+  storageClassName: "nfs-client-3"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
   name: gitlab-gitlab-ce-data
   namespace: gitlab-dev2
 spec:

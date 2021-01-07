@@ -104,7 +104,7 @@ spec:
             claimName: gitlab-postgresql
       containers:
         - name: gitlab-postgresql
-          image: '192.168.80.54:8081/library/postgres:latest'
+          image: '192.168.80.54:8081/library/postgres:11.9'
           ports:
             - name: postgresql
               containerPort: 5432
@@ -196,6 +196,12 @@ spec:
         - name: gitlab-data
           persistentVolumeClaim:
             claimName: gitlab-gitlab-ce-data
+        - name: gitlab-config
+          persistentVolumeClaim:
+            claimName: gitlab-config-pvc
+        - name: gitlab-log
+          persistentVolumeClaim:
+            claimName: gitlab-log-pvc
         - name: gitlab-tls
           secret:
             secretName: gitlab-dev2-tls-pem
@@ -255,6 +261,10 @@ spec:
               mountPath: /etc/gitlab/ssl
             - name: gitlab-data
               mountPath: /var/opt/gitlab
+            - mountPath: /etc/gitlab
+              name: gitlab-config
+            - mountPath: /var/log/gitlab
+              name: gitlab-log
           livenessProbe:
             httpGet:
               path: /help
