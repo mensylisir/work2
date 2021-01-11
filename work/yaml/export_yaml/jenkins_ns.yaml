@@ -213,6 +213,8 @@ items:
           env:
           - name: TZ
             value: Asia/Shanghai
+          - name: GIT_SSL_NO_VERIFY
+            value: "1"
           image: 192.168.80.54:8081/library/jenkins/jenkins:v1.0.1_alpha
           imagePullPolicy: IfNotPresent
           name: jenkins
