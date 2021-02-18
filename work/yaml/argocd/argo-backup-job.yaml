@@ -2,7 +2,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: argo-backup
-  namespace: argocd
+  namespace: dev
 spec:
   accessModes:
     - ReadWriteOnce
@@ -15,7 +15,7 @@ kind: CronJob
 apiVersion: batch/v1beta1
 metadata:
   name: argo-backup
-  namespace: argocd
+  namespace: dev
 spec:
   schedule: "*/1 * * * *"
   jobTemplate:

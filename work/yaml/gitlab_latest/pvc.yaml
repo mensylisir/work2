@@ -9,7 +9,7 @@ spec:
   resources:
     requests:
       storage: "50Gi"
-  storageClassName: "nfs-client-3"
+  storageClassName: "nfs-client"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -24,7 +24,7 @@ spec:
   resources:
     requests:
       storage: "50Gi"
-  storageClassName: "nfs-client-3"
+  storageClassName: "nfs-client"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -37,7 +37,7 @@ spec:
   resources:
     requests:
       storage: "50Gi"
-  storageClassName: "nfs-client-3"
+  storageClassName: "nfs-client"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -52,7 +52,7 @@ spec:
   resources:
     requests:
       storage: "50Gi"
-  storageClassName: "nfs-client-3"
+  storageClassName: "nfs-client"
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -67,7 +67,7 @@ spec:
   resources:
     requests:
       storage: "50Gi"
-  storageClassName: "nfs-client-3"
+  storageClassName: "nfs-client"
 
 
 

@@ -206,6 +206,9 @@ spec:
           secret:
             secretName: gitlab-dev2-tls-pem
             defaultMode: 420
+        - name: timezone
+          hostPath: 
+            path: /usr/share/zoneinfo/Asia/Shanghai  
       containers:
         - name: gitlab-gitlab-ce
           image: '192.168.80.54:8081/library/gitlab/gitlab-ce:13.6.0-ce.0'
@@ -220,6 +223,8 @@ spec:
               containerPort: 443
               protocol: TCP
           env:
+            - name: TZ
+              value: Asia/Shanghai
             - name: GITLAB_OMNIBUS_CONFIG
               valueFrom:
                 configMapKeyRef:
@@ -265,6 +270,9 @@ spec:
               name: gitlab-config
             - mountPath: /var/log/gitlab
               name: gitlab-log
+            - name: timezone
+              readOnly: true
+              mountPath: /etc/localtime
           livenessProbe:
             httpGet:
               path: /help

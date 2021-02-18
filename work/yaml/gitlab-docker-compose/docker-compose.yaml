@@ -3,17 +3,17 @@ version: '2.3'
 services:
   redis:
     restart: always
-    image: harbor.rdev.tech/library/redis:5.0.9
+    image: harbor-dev.rdev.tech/library/redis:5.0.9
     command:
     - --loglevel warning
     volumes:
-    - redis-data:/var/lib/redis:Z
+    - /data/redis-data:/var/lib/redis:Z
 
   postgresql:
     restart: always
-    image: harbor.rdev.tech/sameersbn/postgresql:11-20200524
+    image: harbor-dev.rdev.tech/library/postgresql:11-20200524
     volumes:
-    - postgresql-data:/var/lib/postgresql:Z
+    - /data/postgres-data:/var/lib/postgresql:Z
     environment:
     - DB_USER=gitlab
     - DB_PASS=password
@@ -22,15 +22,17 @@ services:
 
   gitlab:
     restart: always
-    image: harbor.rdev.tech/sameersbn/gitlab:13.2.2
+    image: harbor-dev.rdev.tech/gitlab/gitlab:13.6.0
     depends_on:
     - redis
     - postgresql
     ports:
     - "10080:80"
     - "10022:22"
+    - "443:443"
     volumes:
-    - gitlab-data:/home/git/data:Z
+    - /data/gitlab-data:/home/git/data:Z
+    - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
     healthcheck:
       test: ["CMD", "/usr/local/sbin/healthcheck"]
       interval: 5m
@@ -50,21 +52,21 @@ services:
     - REDIS_HOST=redis
     - REDIS_PORT=6379
 
-    - TZ=Asia/Kolkata
-    - GITLAB_TIMEZONE=Kolkata
+    - TZ=Asia/Shanghai
+    - GITLAB_TIMEZONE=UTC
 
-    - GITLAB_HTTPS=false
-    - SSL_SELF_SIGNED=false
+    - GITLAB_HTTPS=true
+    - SSL_SELF_SIGNED=true
 
-    - GITLAB_HOST=localhost
-    - GITLAB_PORT=10080
+    - GITLAB_HOST=gitlab.dev.rdev.tech
+    - GITLAB_PORT=443
     - GITLAB_SSH_PORT=10022
     - GITLAB_RELATIVE_URL_ROOT=
     - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alphanumeric-string
     - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alphanumeric-string
     - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alphanumeric-string
 
-    - GITLAB_ROOT_PASSWORD=
+    - GITLAB_ROOT_PASSWORD=Def@u1tpwd
     - GITLAB_ROOT_EMAIL=
 
     - GITLAB_NOTIFY_ON_BROKEN_BUILDS=true
@@ -94,9 +96,9 @@ services:
     - IMAP_SSL=true
     - IMAP_STARTTLS=false
 
-    - OAUTH_ENABLED=false
+    - OAUTH_ENABLED=true
     - OAUTH_AUTO_SIGN_IN_WITH_PROVIDER=
-    - OAUTH_ALLOW_SSO=
+    - OAUTH_ALLOW_SSO=saml
     - OAUTH_BLOCK_AUTO_CREATED_USERS=true
     - OAUTH_AUTO_LINK_LDAP_USER=false
     - OAUTH_AUTO_LINK_SAML_USER=false
@@ -130,19 +132,19 @@ services:
     - OAUTH_BITBUCKET_API_KEY=
     - OAUTH_BITBUCKET_APP_SECRET=
 
-    - OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL=
-    - OAUTH_SAML_IDP_CERT_FINGERPRINT=
-    - OAUTH_SAML_IDP_SSO_TARGET_URL=
-    - OAUTH_SAML_ISSUER=
-    - OAUTH_SAML_LABEL="Our SAML Provider"
+    - OAUTH_SAML_ASSERTION_CONSUMER_SERVICE_URL=https://gitlab.dev.rdev.tech/users/auth/saml/callback
+    - OAUTH_SAML_IDP_CERT_FINGERPRINT=00:B7:0C:14:63:36:06:93:0A:5C:12:AB:71:71:9D:37:15:4E:2B:C3
+    - OAUTH_SAML_IDP_SSO_TARGET_URL=https://keycloak-dev.rdev.tech/auth/realms/demo/protocol/saml/clients/gitlab.dev.rdev.tech
+    - OAUTH_SAML_ISSUER=gitlab.dev.rdev.tech
+    - OAUTH_SAML_LABEL=Keycloak Login
     - OAUTH_SAML_NAME_IDENTIFIER_FORMAT=urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-    - OAUTH_SAML_GROUPS_ATTRIBUTE=
+    - OAUTH_SAML_GROUPS_ATTRIBUTE=groups
     - OAUTH_SAML_EXTERNAL_GROUPS=
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL=
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME=
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME=
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME=
-    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME=
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_EMAIL=email
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME=name
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_USERNAME=name
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME=first_name
+    - OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME=last_name
 
     - OAUTH_CROWD_SERVER_URL=
     - OAUTH_CROWD_APP_NAME=
@@ -156,8 +158,3 @@ services:
     - OAUTH_AZURE_API_KEY=
     - OAUTH_AZURE_API_SECRET=
     - OAUTH_AZURE_TENANT_ID=
-
-volumes:
-  redis-data:
-  postgresql-data:
-  gitlab-data:

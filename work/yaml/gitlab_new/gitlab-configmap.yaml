@@ -64,25 +64,31 @@ data:
     nginx['ssl_certificate_key'] = "/etc/gitlab/ssl/gitlab-server-key.pem";
 
     gitlab_rails['gitlab_shell_ssh_port'] = 31146;
+    gitlab_rails['rack_attack_git_basic_auth'] = {
+      'enabled' => true,
+      'ip_whitelist' => ["127.0.0.1","192.168.80.79"],
+      'maxretry' => 300,
+      'findtime' => 5,
+      'bantime' => 60
+    };
     gitlab_rails['omniauth_providers'] = [
       {
         name: 'saml',
         groups_attribute: 'Groups',
         required_groups: ['Admin'],
         args: {
-                 assertion_consumer_service_url: 'http://gitlab.rdev.tech/users/auth/saml/callback',
-                 idp_cert_fingerprint: '68:87:CF:A6:DF:9D:EB:06:77:50:87:7E:9E:5D:E3:09:C0:F0:70:7C',
-                 idp_sso_target_url: 'http://gitlab.rdev.tech/auth/realms/demo/protocol/saml/clients/gitlab.rdev.tech',
-                 issuer: 'gitlab.k8s-rf.io',
+                 assertion_consumer_service_url: 'https://gitlab.rdev.tech/users/auth/saml/callback',
+                 idp_cert_fingerprint: '00:B7:0C:14:63:36:06:93:0A:5C:12:AB:71:71:9D:37:15:4E:2B:C3',
+                 idp_sso_target_url: 'http://192.168.81.104/auth/realms/demo/protocol/saml/clients/gitlab.rdev.tech',
+                 issuer: 'gitlab.rdev.tech',
                  attribute_statements: {
-                   first_name: ['first_name'],
+                  first_name: ['first_name'],
                    last_name: ['last_name'],
                    name: ['name'],
                    username: ['name'],
                    email: ['email'] },
-                 name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
-               },
+                   name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+          },
         label: 'Company Login' # optional label for SAML login button, defaults to "Saml"
       }
-    ];
-
+      ];

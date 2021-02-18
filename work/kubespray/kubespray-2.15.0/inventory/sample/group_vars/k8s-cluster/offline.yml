@@ -1,0 +1,68 @@
+---
+## Global Offline settings
+### Private Container Image Registry
+# registry_host: "myprivateregisry.com"
+# files_repo: "http://myprivatehttpd"
+### If using CentOS, RedHat or Fedora
+# yum_repo: "http://myinternalyumrepo"
+### If using Debian
+# debian_repo: "http://myinternaldebianrepo"
+### If using Ubuntu
+# ubuntu_repo: "http://myinternalubunturepo"
+
+## Container Registry overrides
+kube_image_repo: "harbor.dev.rdev.tech/kubesprary"
+gcr_image_repo: "harbor.dev.rdev.tech/kubesprary"
+docker_image_repo: "harbor.dev.rdev.tech/kubesprary"
+quay_image_repo: "harbor.dev.rdev.tech/kubesprary"
+
+## Kubernetes components
+kubeadm_download_url: "http://192.168.80.48/kubeadm"
+kubectl_download_url: "http://192.168.80.48/kubectl"
+kubelet_download_url: "http://192.168.80.48/kubelet"
+
+## CNI Plugins
+cni_download_url: "http://192.168.80.48/cni-plugins-linux-amd64-v0.9.0.tgz"
+
+## cri-tools
+crictl_download_url: "http://192.168.80.48/crictl-v1.20.0-linux-amd64.tar.gz"
+
+## [Optional] etcd: only if you **DON'T** use etcd_deployment=host
+etcd_download_url: "http://192.168.80.48/etcd-v3.4.13-linux-amd64.tar.gz"
+
+# [Optional] Calico: If using Calico network plugin
+calicoctl_download_url: "http://192.168.80.48/calicoctl-linux-amd64"
+
+## CentOS/Redhat
+### Docker
+docker_rh_repo_base_url: "ftp://192.168.80.60/pub/docker-ce"
+docker_rh_repo_gpgkey: "ftp://192.168.80.60/pub/docker-ce/gpg"
+### Containerd
+# extras_rh_repo_base_url: "{{ yum_repo }}/centos/$releasever/extras/$basearch"
+# extras_rh_repo_gpgkey: "{{ yum_repo }}/containerd/gpg"
+
+## Fedora
+### Docker
+# docker_fedora_repo_base_url: "{{ yum_repo }}/docker-ce/{{ ansible_distribution_major_version }}/{{ ansible_architecture }}"
+# docker_fedora_repo_gpgkey: "{{ yum_repo }}/docker-ce/gpg"
+### Containerd
+# containerd_fedora_repo_base_url: "{{ yum_repo }}/containerd"
+# containerd_fedora_repo_gpgkey: "{{ yum_repo }}/docker-ce/gpg"
+
+## Debian
+### Docker
+# docker_debian_repo_base_url: "{{ debian_repo }}/docker-ce"
+# docker_debian_repo_gpgkey: "{{ debian_repo }}/docker-ce/gpg"
+### Containerd
+# containerd_debian_repo_base_url: "{{ ubuntu_repo }}/containerd"
+# containerd_debian_repo_gpgkey: "{{ ubuntu_repo }}/containerd/gpg"
+# containerd_debian_repo_repokey: 'YOURREPOKEY'
+
+## Ubuntu
+### Docker
+# docker_ubuntu_repo_base_url: "{{ ubuntu_repo }}/docker-ce"
+# docker_ubuntu_repo_gpgkey: "{{ ubuntu_repo }}/docker-ce/gpg"
+### Containerd
+# containerd_ubuntu_repo_base_url: "{{ ubuntu_repo }}/containerd"
+# containerd_ubuntu_repo_gpgkey: "{{ ubuntu_repo }}/containerd/gpg"
+# containerd_ubuntu_repo_repokey: 'YOURREPOKEY'

@@ -2361,7 +2361,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: argocd-application-controller
-  namespace: argocd
+  namespace: dev
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -2378,7 +2378,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: argocd-server
-  namespace: argocd
+  namespace: dev
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -2582,7 +2582,7 @@ spec:
         - "20"
         - --operation-processors
         - "10"
-        image: 192.168.80.54:8081/library/argoproj/argocd:v1.7.9
+        image: harbor-dev.rdev.tech/library/argoproj/argocd:v1.7.9
         imagePullPolicy: Always
         livenessProbe:
           httpGet:
@@ -2622,7 +2622,7 @@ spec:
       - command:
         - /shared/argocd-util
         - rundex
-        image: 192.168.80.54:8081/library/dexidp/dex:v2.22.0
+        image: harbor-dev.rdev.tech/library/dexidp/dex:v2.22.0
         imagePullPolicy: Always
         name: dex
         ports:
@@ -2638,7 +2638,7 @@ spec:
         - -n
         - /usr/local/bin/argocd-util
         - /shared
-        image: 192.168.80.54:8081/library/argoproj/argocd:v1.7.9
+        image: harbor-dev.rdev.tech/library/argoproj/argocd:v1.7.9
         imagePullPolicy: Always
         name: copyutil
         volumeMounts:
@@ -2672,7 +2672,7 @@ spec:
         - ""
         - --appendonly
         - "no"
-        image: 192.168.80.54:8081/library/redis:5.0.10-alpine
+        image: harbor-dev.rdev.tech/library/redis:5.0.10-alpine
         imagePullPolicy: Always
         name: redis
         ports:
@@ -2707,7 +2707,7 @@ spec:
         - argocd-repo-server
         - --redis
         - argocd-redis:6379
-        image: 192.168.80.54:8081/library/argoproj/argocd:v1.7.9
+        image: harbor-dev.rdev.tech/library/argoproj/argocd:v1.7.9
         imagePullPolicy: Always
         name: argocd-repo-server
         ports:
@@ -2767,7 +2767,7 @@ spec:
         - argocd-server
         - --staticassets
         - /shared/app
-        image: 192.168.80.54:8081/library/argoproj/argocd:v1.7.9
+        image: harbor-dev.rdev.tech/library/argoproj/argocd:v1.7.9
         imagePullPolicy: Always
         name: argocd-server
         ports:

@@ -1,0 +1,18 @@
+{
+    "hosts": [
+        "gitlab.dev.rdev.tech"
+    ],
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "CN",
+            "ST": "beijing",
+            "L": "haidian",
+            "O": "Cars",
+            "OU": "ICT"
+        }
+    ]
+}

@@ -67,9 +67,9 @@ data:
         groups_attribute: 'Groups',
         required_groups: ['Admin'],
         args: {
-                 assertion_consumer_service_url: 'http://gitlab-dev2.rdev.tech/users/auth/saml/callback',
-                 idp_cert_fingerprint: '68:87:CF:A6:DF:9D:EB:06:77:50:87:7E:9E:5D:E3:09:C0:F0:70:7C',
-                 idp_sso_target_url: 'http://gitlab-dev2.rdev.tech/auth/realms/demo/protocol/saml/clients/gitlab-dev2.rdev.tech',
+                 assertion_consumer_service_url: 'https://gitlab-dev2.rdev.tech/users/auth/saml/callback',
+                 idp_cert_fingerprint: '00:B7:0C:14:63:36:06:93:0A:5C:12:AB:71:71:9D:37:15:4E:2B:C3',
+                 idp_sso_target_url: 'https://keycloak-dev.rdev.tech/auth/realms/demo/protocol/saml/clients/gitlab-dev2.rdev.tech',
                  issuer: 'gitlab-dev2.rdev.tech',
                  attribute_statements: {
                    first_name: ['first_name'],
