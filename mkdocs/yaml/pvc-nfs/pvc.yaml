@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfswebdir
+  namespace: zjk
+  labels:
+    app: inner
+    group: dev
+spec:
+  storageClassName: sc1
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 200Gi

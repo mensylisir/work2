@@ -1,0 +1,126 @@
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgrespvc
+  namespace: dev
+  labels:
+    app: postgres
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "4Gi"
+  storageClassName: "nfs-client"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: dev
+  labels:
+    app: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      name: postgres
+      labels:
+        app: postgres
+    spec:
+      containers:
+      - name: postgres
+        image: 192.168.80.54:8081/library/postgres:9.6.8
+        ports:
+          - containerPort: 5432
+        env:
+          - name: POSTGRES_USER
+            value: sonar
+          - name: POSTGRES_PASSWORD
+            value: sonar
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: postgres-data
+      volumes:
+      - name: postgres-data
+        persistentVolumeClaim:
+          claimName: postgrespvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: dev
+  labels:
+    app: postgres
+spec:
+  type: NodePort
+  ports:
+  - port: 5432
+  selector:
+    app: postgres
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonar
+  namespace: dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sonar
+  template:
+    metadata:
+      labels:
+        app: sonar
+    spec:
+      initContainers:
+        - name: cp-jar
+          image: 192.168.80.54:8081/library/rf/sonarqube:latest
+          command:
+            - sh
+            - /usr/local/s2i/run.sh
+          volumeMounts:
+            - name: cp-jar
+              mountPath: /libext
+          imagePullPolicy: Always
+      volumes:
+        - name: cp-jar
+          emptyDir: {}
+      containers:
+      - name: sonar
+        image: 192.168.80.54:8081/library/sonarqube:7.4-community
+        ports:
+        - containerPort: 9000
+        env:
+        - name: SONARQUBE_JDBC_USERNAME
+          value: sonar
+        - name: SONARQUBE_JDBC_PASSWORD
+          value: sonar
+        - name: SONARQUBE_JDBC_URL
+          value: jdbc:postgresql://postgres:5432/sonar
+        volumeMounts:
+          - name: cp-jar
+            mountPath: /temp/sonar
+        command:
+            - /bin/sh
+            - '-c'
+            - cp /temp/sonar/* /opt/sonarqube/extensions/plugins/ && /opt/sonarqube/bin/run.sh
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonar
+  namespace: dev
+spec:
+  type: NodePort
+  ports:
+  - port: 9000
+    nodePort: 30002
+  selector:
+    app: sonar

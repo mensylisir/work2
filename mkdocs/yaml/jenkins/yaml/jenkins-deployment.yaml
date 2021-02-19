@@ -1,0 +1,100 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: jenkinshomepvc
+  namespace: dev
+  labels:
+    app: jenkins
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "400Gi"
+  storageClassName: "nfs-client"
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mavenrepopvc
+  namespace: dev
+  labels:
+    app: jenkins
+spec:
+  accessModes:
+    - "ReadWriteOnce"
+  resources:
+    requests:
+      storage: "40Gi"
+  storageClassName: "nfs-client"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins
+  namespace: dev
+  labels:
+    k8s-app: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: jenkins
+  template:
+    metadata:
+      labels:
+        k8s-app: jenkins
+    spec:
+      initContainers:
+        - name: cp-jar
+          image: 192.168.80.54:8081/library/rf/jenkins-jssecacerts:latest
+          command:
+            - sh
+            - /usr/local/s2i/run.sh
+          volumeMounts:
+            - name: cp-jar
+              mountPath: /libext
+          imagePullPolicy: Always
+      containers:
+        - name: jenkins
+          image: 192.168.80.54:8081/library/jenkins/jenkins:v1.0.1_alpha
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: TZ
+              value: Asia/Shanghai
+          volumeMounts:
+            - name: jenkins-home
+              mountPath: /var/jenkins_home
+            - name: maven-repository
+              mountPath: /opt/maven/repository
+            - name: docker
+              mountPath: /usr/bin/docker
+            - name: docker-sock
+              mountPath: /var/run/docker.sock
+            - name: cp-jar
+              mountPath: /temp/jenkinscerts
+          command:
+              - /bin/sh
+              - '-c'
+              - cp /temp/jenkinscerts/* /usr/local/openjdk-8/jre/lib/security/ && /usr/local/bin/jenkins.sh
+          ports:
+            - containerPort: 8080
+            - containerPort: 50000
+      volumes:
+        - name: jenkins-home
+          persistentVolumeClaim:
+            claimName: jenkinshomepvc
+        - name: maven-repository
+          persistentVolumeClaim:
+            claimName: mavenrepopvc
+        - name: docker
+          hostPath:
+            path: /usr/bin/docker
+        - name: docker-sock
+          hostPath:
+            path: /var/run/docker.sock
+        - name: cp-jar
+          emptyDir: {}
+      serviceAccountName: jenkins-admin

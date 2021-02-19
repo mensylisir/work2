@@ -1,0 +1,65 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: gitlab-gitlab-ce-data
+  namespace: gitlab-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "50Gi"
+  storageClassName: "nfs-client"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: gitlab-gitlab-ce-etc
+  namespace: gitlab-dev
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "50Gi"
+  storageClassName: "nfs-client"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: gitlab-postgresql
+  namespace: gitlab-dev
+  labels:
+    app: gitlab-postgresql
+    chart: postgresql-0.8.1
+    heritage: Tiller
+    release: gitlab
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "50Gi"
+  storageClassName: "nfs-client"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: gitlab-redis
+  namespace: gitlab-dev
+  labels:
+    app: gitlab-redis
+    chart: redis-0.9.0
+    heritage: Tiller
+    release: gitlab
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: "50Gi"
+  storageClassName: "nfs-client"
+
+
+
+
