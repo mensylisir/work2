@@ -443,3 +443,26 @@ openssl x509 -inform PEM -in /opt/bak/ca.pem -out rdev.tech.cert
 openssl x509 -inform PEM -in /opt/bak/harbor-dev.pem -out harbor-dev.rdev.tech.cert 
 ```
 
+
+
+### harbor存储切换NFS
+
+
+
+```
+#nfs服务器执行，去nfs服务器创建目录并添加777权限
+cd /opt/mountnfs;mkdir harbor-1921688078-20210126;chmod +777 harbor-1921688078-20210126;#在nfs服务器192.168.81.106操作
+#harbor机器执行，安装nfs 客户端 (客户端执行)harbor-1921688078-20210126
+yum install nfs-utils # 所有的k8s worker节点都需要安装
+mkdir -p /opt/data;mount -t nfs 192.168.81.106:/data/nfsmount/harbor-1921688078-20210126 /opt/data
+#修改harbor.yal,修改挂载地址
+#把之前的/data目录下文件拷贝到挂载目录，并添加权限。
+cp -rf /data/* /opt/data/
+chmod +777 -R /opt/data
+#重新停掉harbor并重新安装
+cd /opt/harbor
+docker-compose down
+./install.sh --with-notary --with-clair --with-trivy --with-chartmuseum
+#查看系统是否启动，并切是否可以和其他harbor复制镜像
+```
+

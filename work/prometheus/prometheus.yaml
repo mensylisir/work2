@@ -1,0 +1,24 @@
+global:
+  scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+scrape_configs:
+  - job_name: 'federate'
+    scrape_interval: 15s
+    honor_labels: true
+    metrics_path: '/federate'
+    params:
+      'match[]':
+        #- '{job="prometheus"}'
+        - '{__name__=~"kube.*"}'
+        #- '{job=~"prometheus.*"}'
+        - '{job="apiserver"}'
+        #- '{job="node"}'
+    static_configs:
+      - targets:
+        - '192.168.80.92:30910'
+        - '192.168.80.32:32418'
+        - '192.168.80.60:30877'

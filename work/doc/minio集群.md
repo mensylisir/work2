@@ -6,6 +6,12 @@
 
 ```
 docker run -d --net=host --restart always --name=minio -p 9000:9000 -e MINIO_ACCESS_KEY=minio -e MINIO_SECRET_KEY=minio123  -v /data/minio:/data/minio 192.168.80.54:8081/library/minio/minio:latest server http://192.168.80.86:9000/data/minio/disk1  http://192.168.80.86:9000/data/minio/disk2 http://192.168.80.86:9000/data/minio/disk3 http://192.168.80.86:9000/data/minio/disk4 http://192.168.80.87:9000/data/minio/disk1  http://192.168.80.87:9000/data/minio/disk2 http://192.168.80.87:9000/data/minio/disk3  http://192.168.80.87:9000/data/minio/disk4 http://192.168.80.88:9000/data/minio/disk1  http://192.168.80.88:9000/data/minio/disk2 http://192.168.80.88:9000/data/minio/disk3 http://192.168.80.88:9000/data/minio/disk4 
+
+docker run -d --net=host --restart always --name=minio -p 9000:9000 -e MINIO_ACCESS_KEY=minio -e MINIO_SECRET_KEY=minio123  -v /opt/data/minio:/opt/data/minio 192.168.80.54:8081/library/minio/minio:latest server http://192.168.80.62:9000/opt/data/minio/disk1  http://192.168.80.62:9000/opt/data/minio/disk2 http://192.168.80.62:9000/opt/data/minio/disk3 http://192.168.80.62:9000/opt/data/minio/disk4 http://192.168.80.63:9000/opt/data/minio/disk1  http://192.168.80.63:9000/opt/data/minio/disk2 http://192.168.80.63:9000/opt/data/minio/disk3 http://192.168.80.63:9000/opt/data/minio/disk4 http://192.168.80.64:9000/opt/data/minio/disk1  http://192.168.80.64:9000/opt/data/minio/disk2 http://192.168.80.64:9000/opt/data/minio/disk3 http://192.168.80.64:9000/opt/data/minio/disk4
+
+
+docker run -d --net=host --restart always --name=minio -p 9000:9000 -e MINIO_ACCESS_KEY=minio -e MINIO_SECRET_KEY=minio123  -v /opt/data/minio:/data/minio 192.168.80.54:8081/library/minio/minio:latest server http://192.168.80.62:9000/opt/data/minio/disk1  http://192.168.80.62:9000/opt/data/minio/disk2 http://192.168.80.62:9000/opt/data/minio/disk3 http://192.168.80.62:9000/opt/data/minio/disk4 http://192.168.80.63:9000/opt/data/minio/disk1  http://192.168.80.63:9000/opt/data/minio/disk2 http://192.168.80.63:9000/opt/data/minio/disk3 http://192.168.80.63:9000/opt/data/minio/disk4 http://192.168.80.64:9000/opt/data/minio/disk1  http://192.168.80.64:9000/opt/data/minio/disk2 http://192.168.80.64:9000/opt/data/minio/disk3 http://192.168.80.64:9000/opt/data/minio/disk4
+
 ```
 
 1、环境信息

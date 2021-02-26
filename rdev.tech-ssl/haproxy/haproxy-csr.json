@@ -1,0 +1,18 @@
+{
+    "hosts": [
+        "192.168.81.11"
+    ],
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "CN",
+            "ST": "beijing",
+            "L": "haidian",
+            "O": "Cars",
+            "OU": "ICT"
+        }
+    ]
+}

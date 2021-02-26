@@ -113,3 +113,31 @@ ETCDCTL_API=3 /usr/local/bin/etcdctl \
  --name etcd-app-master-1
 ```
 
+```
+ETCDCTL_API=3 /usr/local/bin/etcdctl \
+ --endpoints="https://192.168.80.79:2379,https://192.168.80.80:2379" \
+ --cert=/etc/kubernetes/pki/etcd/server.crt \
+ --key=/etc/kubernetes/pki/etcd/server.key \
+ --cacert=/etc/kubernetes/pki/etcd/ca.crt  \
+ --initial-advertise-peer-urls https://192.168.80.79:2380 \
+ --initial-cluster-token=etcd-cluster-token \
+ --initial-cluster=etcd-jenkins-master-1=https://192.168.80.79:2380,etcd-jenkins-master-2=https://192.168.80.80:2380 \
+ snapshot restore /home/backup/etcd-snapshot-202101202357.db \
+ --data-dir=/var/lib/etcd/ \
+ --name etcd-jenkins-master-1
+```
+
+```
+ETCDCTL_API=3 /usr/local/bin/etcdctl \
+ --endpoints="https://192.168.80.79:2379,https://192.168.80.80:2379" \
+ --cert=/etc/kubernetes/pki/etcd/server.crt \
+ --key=/etc/kubernetes/pki/etcd/server.key \
+ --cacert=/etc/kubernetes/pki/etcd/ca.crt  \
+ --initial-advertise-peer-urls https://192.168.80.80:2380 \
+ --initial-cluster-token=etcd-cluster-token \
+ --initial-cluster=etcd-jenkins-master-1=https://192.168.80.79:2380,etcd-jenkins-master-2=https://192.168.80.80:2380 \
+ snapshot restore /home/backup/etcd-snapshot-202101202357.db \
+ --data-dir=/var/lib/etcd/ \
+ --name etcd-jenkins-master-2
+```
+

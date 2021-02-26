@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  mkdocs:
+    container_name: mkdocs
+    image: harbor.dev.rdev.tech/library/mkdocs:1.0.0_alpha
+    restart: always
+    network_mode: "host"
+    ports:
+      - "8000:8000"
+    environment:
+      LIVE_RELOAD_SUPPORT: 'true'
+      ADD_MODULES: 'fontawesome-markdown mkdocs-git-revision-date-localized-plugin mkdocs-material'
+      FAST_MODE: 'true'
+      DOCS_DIRECTORY: '/mkdocs'
+      GIT_REPO: 'ssh://git@gitlab.dev.rdev.tech:10022/grafana/mkdocs.git'
+      UPDATE_INTERVAL: 15
+      AUTO_UPDATE: 'true'
+    volumes:
+      - /etc/hosts:/etc/hosts:ro
+      - /usr/share/zoneinfo/Asia/Shanghai:/etc/localtime:ro
+      - /mkdocs:/mkdocs
+      - $HOME/.ssh/id_rsa:/root/.ssh/id_rsa

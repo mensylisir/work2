@@ -1,0 +1,1 @@
+https://keycloak-dev.rdev.tech/auth/realms/demo/protocol/openid-connect/auth?client_id=https_jenkins&redirect_uri=https%3A%2F%2Fjenkins-dev.rdev.tech%2FsecurityRealm%2FfinishLogin&state=a7a46deb-8cca-43b0-8fa1-74d33b3baa8f&response_type=code&scope=openid

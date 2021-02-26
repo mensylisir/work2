@@ -52,13 +52,13 @@ fe00::2	ip6-allrouters
 
 ```
 extra_hosts:
- - "keycloak-dev.rdev.tech:192.168.81.104"
- - "harbor-dev.rdev.tech:192.168.80.77"
+ - "keycloak.dev.rdev.tech:192.168.81.104"
+ - "harbor.dev.rdev.tech:192.168.80.77"
 ```
 
 ```
-192.168.81.104  keycloak-dev.rdev.tech
-192.168.80.77   harbor-dev.rdev.tech
+192.168.81.104  keycloak.dev.rdev.tech
+192.168.80.77   harbor.dev.rdev.tech
 ```
 
 

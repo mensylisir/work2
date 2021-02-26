@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-state-metrics
+  namespace: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: kube-state-metrics
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: kube-state-metrics
+    spec:
+      serviceAccountName: prometheus
+      containers:
+      - name: kube-state-metrics
+        image: 192.168.80.54:8081/bitnami/kube-state-metrics:1.9.7
+        ports:
+        - containerPort: 8080
+          name: monitoring
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kube-state-metrics
+  namespace: prometheus
+spec:
+  selector:
+    app: kube-state-metrics
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+    nodePort: 30920
