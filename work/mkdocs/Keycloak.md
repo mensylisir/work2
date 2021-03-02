@@ -43,6 +43,16 @@ docker run -d --net keycloak-network --name keycloak -p 8080:8080 -e DB_ADDR=pos
 docker run -d --net keycloak-network --name keycloak -p 80:8080 -p 443:8443 -p 9990:9990 -e TZ=Asia/Shanghai --privileged=true   -e DB_ADDR=postgres -e DB_USER=keycloak -e DB_PASSWORD=password -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=admin   -v /etc/localtime:/etc/localtime  192.168.80.54:8081/library/jboss/keycloak
 ```
 
+```shell
+docker run -d --net keycloak-network --name keycloak1 -p 81:8080 -p 444:8443 -p 9991:9990 -e TZ=Asia/Shanghai --privileged=true   -e DB_ADDR=postgres -e DB_USER=keycloak  -v /etc/localtime:/etc/localtime  192.168.80.54:8081/library/jboss/keycloak
+```
+
+```shell
+docker run -d --net keycloak-network --name keycloak -p 80:8080 -p 443:8443 -p 9990:9990 -e TZ=Asia/Shanghai --privileged=true   -e DB_ADDR=postgres -e DB_USER=keycloak -e DB_PASSWORD=password -e KEYCLOAK_USER=admin -e KEYCLOAK_PASSWORD=Def@u1tpwd   -v /etc/localtime:/etc/localtime  192.168.80.54:8081/library/jboss/keycloak
+```
+
+
+
 ### 对接jenkins
 
 详见官方文档，请点击[这里](https://plugins.jenkins.io/keycloak/)

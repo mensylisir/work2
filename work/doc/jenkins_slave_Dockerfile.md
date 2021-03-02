@@ -1,6 +1,12 @@
 ### nodejs
 
 ```
+文件夹jenkins_slave_mvn
+```
+
+
+
+```
 #Docker
 FROM 192.168.80.54:8081/library/jenkins/jnlp-slave:latest
 USER root
@@ -35,6 +41,7 @@ COPY sonar-scanner.properties ${SONAR_HOME}/conf/sonar-scanner.properties
 slave_nodejs:v1.0.2_alpha  新增sudo
 slave_nodejs:v1.0.3_alpha  新增https_proxy和http_proxy
 slave_nodejs:v1.0.4_alpha  新增node-sass@4.14.1和node-sass@5.0.0
+slave_nodejs:v1.0.5_alpha  新增id_rsa用于git提交
 ```
 
 
@@ -42,12 +49,16 @@ slave_nodejs:v1.0.4_alpha  新增node-sass@4.14.1和node-sass@5.0.0
 制作镜像
 
 ```
- docker build -t harbor.dev.rdev.tech/library/jenkins/slave_nodejs:v1.0.4_alpha .
+ docker build -t harbor.dev.rdev.tech/library/jenkins/slave_nodejs:v1.0.5_alpha .
 ```
 
 
 
 ### mvn
+
+```
+文件夹jenkins_slave_node
+```
 
 
 
@@ -84,6 +95,7 @@ COPY jfxrt.jar /usr/local/openjdk-8/jre/lib/ext/jfxrt.jar
 ```
 sonar_maven:v1.0.3_alpha 新增sonar
 sonar_maven:v1.0.4_alpha 新增jfxrt.jar（财务编译需要）
+sonar_maven:v1.0.5_alpha 新增id_rsa用于git提交
 ```
 
 
@@ -91,6 +103,6 @@ sonar_maven:v1.0.4_alpha 新增jfxrt.jar（财务编译需要）
 制作镜像
 
 ```
- docker build -t harbor.dev.rdev.tech/library/jenkins/sonar_maven:v1.0.4_alpha .
+ docker build -t harbor.dev.rdev.tech/library/jenkins/sonar_maven:v1.0.5_alpha .
 ```
 

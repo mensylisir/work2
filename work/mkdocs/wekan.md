@@ -31,7 +31,45 @@ docker run -d --restart=always --name wekan --link "wekan-db:db" -e "WITH_API=tr
 > > docker start wekan-db
 > > docker start wekan
 > > 
+> > ingress.yaml内容：
+> > apiVersion: extensions/v1beta1
+> > kind: Ingress
+> > metadata:
+> >   name: wekan
+> >   namespace: dev
+> >   annotations:
+> >     nginx.ingress.kubernetes.io/proxy-body-size: 50m
+> > spec:
+> >   rules:
+> >   - host: wekan.dev.rdev.tech
+> >     http:
+> >       paths:
+> >       - backend:
+> >           serviceName: wekan
+> >           servicePort: 80
+> > ---
+> > apiVersion: v1
+> > kind: Endpoints
+> > metadata:
+> >   name: wekan
+> >   namespace: dev
+> > subsets:
+> >   - addresses:
+> >       - ip: 192.168.80.89
+> >     ports:
+> >       - port: 2000
 > > 
+> > ---
+> > apiVersion: v1
+> > kind: Service
+> > metadata:
+> >   name: wekan
+> >   namespace: dev
+> > spec:
+> >   ports:
+> >     - protocol: TCP
+> >       port: 80
+> >       targetPort: 2000
 > > ```
 > >
 
