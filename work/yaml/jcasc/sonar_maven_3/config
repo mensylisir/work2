@@ -1,0 +1,11 @@
+[core]
+        repositoryformatversion = 0
+        filemode = true
+        bare = false
+        logallrefupdates = true
+[remote "origin"]
+        url = https://liminggang:Qq12345678!@gitlab.dev.rdev.tech/lmgtest/zhjk.git
+        fetch = +refs/heads/*:refs/remotes/origin/*
+[branch "dev-20201020"]
+        remote = origin
+        merge = refs/heads/dev-20201020

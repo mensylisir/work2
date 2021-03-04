@@ -1,0 +1,72 @@
+podTemplate(containers: [
+    containerTemplate(name: 'jnlp', image: 'harbor.dev.rdev.tech/library/jenkins/sonar_maven:v1.0.8_alpha', ttyEnabled: true)
+  ],
+    volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
+                hostPathVolume(hostPath: '/usr/local/bin/docker', mountPath: '/usr/local/bin/docker'),
+                hostPathVolume(hostPath: '/usr/local/bin/kubectl', mountPath: '/usr/local/bin/kubectl')]) {
+node(POD_LABEL) {
+    stage('Get Code') {
+            git  credentialsId: 'yhc_ssh', url: 'ssh://git@gitlab.dev.rdev.tech:10022/imis/imis_backend.git', branch: 'master'
+        }
+    stage('Build Project'){
+            sh "sed -i s#http://192.168.81.103:8081#https://nexus-dev.rdev.tech#g /usr/share/maven/conf/settings.xml"
+            sh "sed -i s/abc123B,/Def@u1tpwd/g /usr/share/maven/conf/settings.xml"
+            sh "mvn -f pom.xml clean package -Dmaven.wagon.http.ssl.insecure=true"
+        }
+    stage('Sonar Scanner'){
+            sh "sonar-scanner -X "+
+                "-Dsonar.host.url=http://192.168.80.82:30002 " +
+                "-Dsonar.login=7eeea6720241874895a09ef394b5d8ef4e0af7dc " +
+                "-Dsonar.language=java " + 
+                "-Dsonar.projectKey=imis-backend_service " + 
+                "-Dsonar.projectName=imis-backend_service " + 
+                "-Dsonar.projectVersion=$BUILD_NUMBER " + 
+                "-Dsonar.sources=. " + 
+                "-Dsonar.sourceEncoding=UTF-8 " + 
+                "-Dsonar.java.binaries=."
+       }
+    stage('Build Docker image'){
+            sh  """
+                cp web/deployment/Dockerfile .
+                targetPort=8080
+                NodePort=38080
+                port=80
+                docker login -u admin -pDef@u1tpwd harbor.dev.rdev.tech
+                #ping 127.0.0.1 -s 10000
+                docker build -t harbor.dev.rdev.tech/backstage-template/java-backend:$BUILD_NUMBER .
+                docker push harbor.dev.rdev.tech/backstage-template/java-backend:$BUILD_NUMBER
+                docker rmi harbor.dev.rdev.tech/backstage-template/java-backend:$BUILD_NUMBER
+                """
+        }
+    stage('Deploy'){
+            sh """
+            git reset --hard
+            git clean -df
+            cd web/deployment/yaml
+            cat dev-platform-backend-deployment.yaml
+            sed -i s/java-backend:[[:digit:]]*\$/java-backend:9999/g dev-platform-backend-deployment.yaml
+            cat dev-platform-backend-deployment.yaml
+            cd ../../../
+            #git config --global user.name jenkins
+            #git config --global user.email jenkins@dingtalk.com
+            #git remote set-url origin https://liminggang:Qq12345678!@gitlab.dev.rdev.tech/imis/imis_backend.git
+            #git add web/deployment/yaml/dev-platform-backend-deployment.yaml
+            #git commit -m 'update tag by jenkins'
+            #git push --set-upstream origin master
+            echo "应用正在部署，请稍后......"
+            sleep 300
+            """                
+        }
+    stage('Test'){
+         meterSphere msEndpoint:'http://192.168.80.89:8081/',
+         msAccessKey:'kRMWd2OcaV2namaI',
+         msSecretKey:'sOvlpQLpaPkZt7gD',
+         workspaceId: '311760e3-2db1-4f84-94e4-ec678717fec7',
+         projectId: 'f46390a1-6701-4e80-95f3-4dcf13dc5ff1',
+         method:'testPlan',
+         testPlanId: 'cee48a60-0c9c-4017-abdc-d7a26fcacd67', 
+         testCaseId: '', 
+         result: 'jenkins'
+        }
+    }
+} 

@@ -1,0 +1,77 @@
+podTemplate(containers: [
+    containerTemplate(name: 'jnlp', image: 'harbor.dev.rdev.tech/library/jenkins/slave_nodejs:v1.0.5_alpha', ttyEnabled: true)
+  ],
+    volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock'),
+                hostPathVolume(hostPath: '/usr/local/bin/docker', mountPath: '/usr/local/bin/docker'),
+                hostPathVolume(hostPath: '/usr/local/bin/kubectl', mountPath: '/usr/local/bin/kubectl')]) {
+node(POD_LABEL) {
+    stage('Get Code') {
+            git  credentialsId: 'yhc_ssh', url: 'ssh://git@gitlab.dev.rdev.tech:10022/imis/imis_frontend.git', branch: 'master'
+        }
+    stage('Build Project'){
+            sh "npm config set registry http://192.168.81.101:8081/repository/npm-g/"
+            sh "npm install"
+            sh "npm run build"
+            sh "npm run build-storybook"
+        }
+    stage('Sonar Scanner'){
+            sh "sonar-scanner -X "+
+                "-Dsonar.host.url=http://192.168.80.82:30002 " +
+                "-Dsonar.login=7eeea6720241874895a09ef394b5d8ef4e0af7dc " +
+                "-Dsonar.language=js " + 
+                "-Dsonar.projectKey=imis_frontend_service " + 
+                "-Dsonar.projectName=imis_frontend_service " + 
+                "-Dsonar.projectVersion=$BUILD_NUMBER " + 
+                "-Dsonar.sources=. " + 
+                "-Dsonar.sourceEncoding=UTF-8 " + 
+                "-Dsonar.java.binaries=."
+       }
+    stage('Build Docker image'){
+            sh  """
+                mkdir -p bak
+                cp -r dist/ bak/
+                cp -r storybook-static/ bak/
+                cd bak/
+                cp ../Dockerfile .
+                cp ../default.conf .
+                docker login -u admin -pDef@u1tpwd harbor.dev.rdev.tech
+                docker build -t harbor.dev.rdev.tech/backstage-template/web-frontend:$BUILD_NUMBER .
+                docker push harbor.dev.rdev.tech/backstage-template/web-frontend:$BUILD_NUMBER
+                docker rmi harbor.dev.rdev.tech/backstage-template/web-frontend:$BUILD_NUMBER
+                """
+        }
+    stage('Deploy'){
+            sh """
+            unset http_proxy
+            unset https_proxy
+            git reset --hard
+            git clean -df
+            cd deploy
+            cat dev-platform-frontend-deployment.yaml
+            sed -i s/web-frontend:[[:digit:]]*\$/web-frontend:$BUILD_NUMBER/g dev-platform-frontend-deployment.yaml
+            cat dev-platform-frontend-deployment.yaml
+            cd ../
+            git config --global user.name jenkins
+            git config --global user.email jenkins@dingtalk.com
+            git remote set-url origin https://liminggang:Qq12345678!@gitlab.dev.rdev.tech/imis/imis_frontend.git
+            git add deploy/dev-platform-frontend-deployment.yaml
+            git commit -m 'update tag by jenkins'
+            # ping 127.0.0.1
+            git push --set-upstream origin master
+            echo "应用正在部署，请稍后......"
+            sleep 300
+            """                
+        }
+    stage('Test'){
+         meterSphere msEndpoint:'http://192.168.80.89:8081/',
+         msAccessKey:'kRMWd2OcaV2namaI',
+         msSecretKey:'sOvlpQLpaPkZt7gD',
+         workspaceId: '311760e3-2db1-4f84-94e4-ec678717fec7',
+         projectId: 'f46390a1-6701-4e80-95f3-4dcf13dc5ff1',
+         method:'testPlan',
+         testPlanId: 'cee48a60-0c9c-4017-abdc-d7a26fcacd67', 
+         testCaseId: '', 
+         result: 'jenkins'
+        }
+    }
+} 
