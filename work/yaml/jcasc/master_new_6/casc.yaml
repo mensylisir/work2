@@ -1,0 +1,165 @@
+jenkins:
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+       - id: admin
+         password: admin
+  authorizationStrategy:
+    globalMatrix:
+      permissions:
+        - "Job/Build:dev"
+        - "Job/Cancel:dev"
+        - "Job/Read:dev"
+        - "Job/Workspace:dev"
+        - "Overall/Administer:admin"
+        - "Overall/Read:authenticated"
+        - "Run/Replay:dev"
+        - "Run/Update:dev"
+  numExecutors: 1
+  remotingSecurity:
+    enabled: true
+  agentProtocols:
+  - "JNLP4-connect"
+  - "Ping"
+  updateCenter:
+    sites:
+      - id: "default"
+        url: "https://updates.jenkins-zh.cn/update-center.json"
+  clouds:
+  - kubernetes:
+      containerCap: 10
+      containerCapStr: "10"
+      jenkinsTunnel: "179.20.121.36:50000"
+      jenkinsUrl: "http://179.20.121.36:8080"
+      name: "kubernetes"
+      namespace: "dev"
+      podRetention: "always"
+      serverUrl: "https://kubernetes.default"
+      templates:
+        - name: maven
+          label: maven
+          podRetention: never
+          nodeUsageMode: NORMAL
+          instanceCapStr: "5"
+          containers:
+          - args: "cat"
+            command: "/bin/sh -c"
+            name: "maven"
+            image: "harbor.dev.rdev.tech/library/jenkins/agent_maven:v1.0.8_alpha"
+            livenessProbe:
+              failureThreshold: 0
+              initialDelaySeconds: 0
+              periodSeconds: 0
+              successThreshold: 0
+              timeoutSeconds: 0
+            alwaysPullImage: false
+            resourceLimitCpu: 1
+            resourceLimitMemory: 2500M
+            resourceRequestCpu: 50m
+            resourceRequestMemory: 250M
+            ttyEnabled: true
+            workingDir: "/home/jenkins/agent"
+          id: "9614d806-c3fa-4005-8890-48f60749dee2"
+          label: "jnlp aaa"
+          namespace: "dev"
+          yamlMergeStrategy: "override"
+        - name: nodejs
+          label: nodejs
+          podRetention: never
+          nodeUsageMode: NORMAL
+          instanceCapStr: "5"
+          containers:
+          - args: "cat"
+            command: "/bin/sh -c"
+            name: "nodejs"
+            image: "harbor.dev.rdev.tech/library/jenkins/slave_nodejs:v1.0.5_alpha"
+            livenessProbe:
+              failureThreshold: 0
+              initialDelaySeconds: 0
+              periodSeconds: 0
+              successThreshold: 0
+              timeoutSeconds: 0
+            alwaysPullImage: false
+            resourceLimitCpu: 1
+            resourceLimitMemory: 2500M
+            resourceRequestCpu: 50m
+            resourceRequestMemory: 250M
+            ttyEnabled: true
+            workingDir: "/home/jenkins/agent"
+          id: "9614d806-c3fa-4005-8890-48f60749dee2"
+          label: "jnlp aaa"
+          namespace: "dev"
+          yamlMergeStrategy: "override"
+        - name: python
+          label: python
+          podRetention: never
+          nodeUsageMode: NORMAL
+          instanceCapStr: "5"
+          containers:
+          - args: "cat"
+            command: "/bin/sh -c"
+            name: "python"
+            image: "habor.dev.rdev.tech/library/jenkins/slave_python:v1.0.1_alpha"
+            livenessProbe:
+              failureThreshold: 0
+              initialDelaySeconds: 0
+              periodSeconds: 0
+              successThreshold: 0
+              timeoutSeconds: 0
+            alwaysPullImage: false
+            resourceLimitCpu: 1
+            resourceLimitMemory: 2500M
+            resourceRequestCpu: 50m
+            resourceRequestMemory: 250M
+            ttyEnabled: true
+            workingDir: "/home/jenkins/agent"
+          id: "9614d806-c3fa-4005-8890-48f60749dee2"
+          label: "jnlp aaa"
+          namespace: "dev"
+          yamlMergeStrategy: "override"
+        - name: golang
+          label: golang
+          podRetention: never
+          nodeUsageMode: NORMAL
+          instanceCapStr: "5"
+          containers:
+          - args: "cat"
+            command: "/bin/sh -c"
+            name: "golang"
+            image: "192.168.80.54:8081/library/jenkins/slave_golang:v1.0.1_alpha"
+            livenessProbe:
+              failureThreshold: 0
+              initialDelaySeconds: 0
+              periodSeconds: 0
+              successThreshold: 0
+              timeoutSeconds: 0
+            alwaysPullImage: false
+            resourceLimitCpu: 1
+            resourceLimitMemory: 2500M
+            resourceRequestCpu: 50m
+            resourceRequestMemory: 250M
+            ttyEnabled: true
+            workingDir: "/home/jenkins/agent"
+          id: "9614d806-c3fa-4005-8890-48f60749dee2"
+          label: "jnlp aaa"
+          namespace: "dev"
+          yamlMergeStrategy: "override"
+security:
+  queueItemAuthenticator:
+    authenticators:
+    - global:
+        strategy: triggeringUsersAuthorizationStrategy
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - basicSSHUserPrivateKey:
+          id: "root_ssh"
+          privateKeySource:
+            directEntry:
+              privateKey: "{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}"
+          scope: GLOBAL
+          username: "root"
+jobs:
+  - file: /var/jenkins_home/seedjob.groovy
