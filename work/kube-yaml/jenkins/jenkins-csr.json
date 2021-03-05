@@ -1,0 +1,19 @@
+{
+    "hosts": [
+        "jenkins-dev.rdev.tech"
+    ],
+    "key": {
+        "algo": "ecdsa",
+        "size": 256
+    },
+    "names": [
+        {
+            "C": "CN",
+            "ST": "beijing",
+            "L": "haidian",
+            "O": "Cars",
+            "OU": "ICT"
+        }
+    ]
+}
+

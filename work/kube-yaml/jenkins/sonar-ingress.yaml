@@ -1,0 +1,24 @@
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: sonar
+  namespace: dev
+  labels:
+    app: sonar
+  annotations:
+    nginx.ingress.kubernetes.io/secure-backends: 'true'
+    nginx.ingress.kubernetes.io/ssl-passthrough: 'true'
+spec:
+  rules:
+    - host: sonaqube-dev.rdev.tech
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: sonar
+              servicePort: 9000
+  tls:
+  - hosts:
+    - sonarqube-dev.rdev.tech
+    secretName: sonarqube-dev-tls-pem
+

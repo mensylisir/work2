@@ -1,0 +1,236 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "3"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"sonar","namespace":"jenkins"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"sonar"}},"template":{"metadata":{"labels":{"app":"sonar"}},"spec":{"containers":[{"command":["/bin/sh","-c","cp /temp/sonar/* /opt/sonarqube/extensions/plugins/ \u0026\u0026 /opt/sonarqube/bin/run.sh"],"env":[{"name":"SONARQUBE_JDBC_USERNAME","value":"sonar"},{"name":"SONARQUBE_JDBC_PASSWORD","value":"sonar"},{"name":"SONARQUBE_JDBC_URL","value":"jdbc:postgresql://postgres:5432/sonar"}],"image":"192.168.80.54:8081/library/sonarqube:7.4-community","name":"sonar","ports":[{"containerPort":9000}],"volumeMounts":[{"mountPath":"/temp/sonar","name":"cp-jar"}]}],"initContainers":[{"command":["sh","/usr/local/s2i/run.sh"],"image":"192.168.80.54:8081/library/rf/sonarqube:latest","imagePullPolicy":"Always","name":"cp-jar","volumeMounts":[{"mountPath":"/libext","name":"cp-jar"}]}],"volumes":[{"emptyDir":{},"name":"cp-jar"}]}}}}
+  creationTimestamp: "2020-12-08T02:34:55Z"
+  generation: 3
+  managedFields:
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations: {}
+      f:spec:
+        f:progressDeadlineSeconds: {}
+        f:replicas: {}
+        f:revisionHistoryLimit: {}
+        f:selector:
+          f:matchLabels:
+            .: {}
+            f:app: {}
+        f:strategy:
+          f:rollingUpdate:
+            .: {}
+            f:maxSurge: {}
+            f:maxUnavailable: {}
+          f:type: {}
+        f:template:
+          f:metadata:
+            f:labels:
+              .: {}
+              f:app: {}
+          f:spec:
+            f:containers:
+              k:{"name":"sonar"}:
+                .: {}
+                f:env:
+                  .: {}
+                  k:{"name":"SONARQUBE_JDBC_PASSWORD"}:
+                    .: {}
+                    f:name: {}
+                    f:value: {}
+                  k:{"name":"SONARQUBE_JDBC_URL"}:
+                    .: {}
+                    f:name: {}
+                    f:value: {}
+                  k:{"name":"SONARQUBE_JDBC_USERNAME"}:
+                    .: {}
+                    f:name: {}
+                    f:value: {}
+                f:image: {}
+                f:imagePullPolicy: {}
+                f:name: {}
+                f:ports:
+                  .: {}
+                  k:{"containerPort":9000,"protocol":"TCP"}:
+                    .: {}
+                    f:containerPort: {}
+                    f:protocol: {}
+                f:resources: {}
+                f:terminationMessagePath: {}
+                f:terminationMessagePolicy: {}
+            f:dnsPolicy: {}
+            f:restartPolicy: {}
+            f:schedulerName: {}
+            f:securityContext: {}
+            f:terminationGracePeriodSeconds: {}
+    manager: kubectl.exe
+    operation: Update
+    time: "2020-12-08T02:34:55Z"
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+      f:spec:
+        f:template:
+          f:spec:
+            f:containers:
+              k:{"name":"sonar"}:
+                f:command: {}
+                f:volumeMounts:
+                  .: {}
+                  k:{"mountPath":"/temp/sonar"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+            f:initContainers:
+              .: {}
+              k:{"name":"cp-jar"}:
+                .: {}
+                f:command: {}
+                f:image: {}
+                f:imagePullPolicy: {}
+                f:name: {}
+                f:resources: {}
+                f:terminationMessagePath: {}
+                f:terminationMessagePolicy: {}
+                f:volumeMounts:
+                  .: {}
+                  k:{"mountPath":"/libext"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+            f:volumes:
+              .: {}
+              k:{"name":"cp-jar"}:
+                .: {}
+                f:emptyDir: {}
+                f:name: {}
+    manager: kubectl
+    operation: Update
+    time: "2020-12-17T01:19:28Z"
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          f:deployment.kubernetes.io/revision: {}
+      f:status:
+        f:availableReplicas: {}
+        f:conditions:
+          .: {}
+          k:{"type":"Available"}:
+            .: {}
+            f:lastTransitionTime: {}
+            f:lastUpdateTime: {}
+            f:message: {}
+            f:reason: {}
+            f:status: {}
+            f:type: {}
+          k:{"type":"Progressing"}:
+            .: {}
+            f:lastTransitionTime: {}
+            f:lastUpdateTime: {}
+            f:message: {}
+            f:reason: {}
+            f:status: {}
+            f:type: {}
+        f:observedGeneration: {}
+        f:readyReplicas: {}
+        f:replicas: {}
+        f:updatedReplicas: {}
+    manager: kube-controller-manager
+    operation: Update
+    time: "2020-12-17T01:19:30Z"
+  name: sonar
+  namespace: jenkins
+  resourceVersion: "3021640"
+  selfLink: /apis/apps/v1/namespaces/jenkins/deployments/sonar
+  uid: 5bb1f3d1-2037-4208-b442-ec85916e79de
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: sonar
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: sonar
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -c
+        - cp /temp/sonar/* /opt/sonarqube/extensions/plugins/ && /opt/sonarqube/bin/run.sh
+        env:
+        - name: SONARQUBE_JDBC_USERNAME
+          value: sonar
+        - name: SONARQUBE_JDBC_PASSWORD
+          value: sonar
+        - name: SONARQUBE_JDBC_URL
+          value: jdbc:postgresql://postgres:5432/sonar
+        image: 192.168.80.54:8081/library/sonarqube:7.4-community
+        imagePullPolicy: IfNotPresent
+        name: sonar
+        ports:
+        - containerPort: 9000
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /temp/sonar
+          name: cp-jar
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - sh
+        - /usr/local/s2i/run.sh
+        image: 192.168.80.54:8081/library/rf/sonarqube:latest
+        imagePullPolicy: Always
+        name: cp-jar
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /libext
+          name: cp-jar
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: cp-jar
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2020-12-08T02:43:31Z"
+    lastUpdateTime: "2020-12-08T02:43:31Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2020-12-08T02:34:55Z"
+    lastUpdateTime: "2020-12-17T01:19:30Z"
+    message: ReplicaSet "sonar-5949d45b67" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 3
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1

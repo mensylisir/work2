@@ -1,0 +1,297 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "2"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"labels":{"k8s-app":"jenkins"},"name":"jenkins","namespace":"jenkins"},"spec":{"replicas":1,"selector":{"matchLabels":{"k8s-app":"jenkins"}},"template":{"metadata":{"labels":{"k8s-app":"jenkins"}},"spec":{"containers":[{"command":["/bin/sh","-c","cp /temp/jenkinscerts/* /usr/local/openjdk-8/jre/lib/security/ \u0026\u0026 /usr/local/bin/jenkins.sh"],"env":[{"name":"TZ","value":"Asia/Shanghai"}],"image":"192.168.80.54:8081/library/jenkins/jenkins:v1.0.1_alpha","imagePullPolicy":"IfNotPresent","name":"jenkins","ports":[{"containerPort":8080},{"containerPort":50000}],"volumeMounts":[{"mountPath":"/var/jenkins_home","name":"jenkins-home"},{"mountPath":"/opt/maven/repository","name":"maven-repository"},{"mountPath":"/usr/bin/docker","name":"docker"},{"mountPath":"/var/run/docker.sock","name":"docker-sock"},{"mountPath":"/temp/jenkinscerts","name":"cp-jar"}]}],"initContainers":[{"command":["sh","/usr/local/s2i/run.sh"],"image":"192.168.80.54:8081/library/rf/jenkins-jssecacerts:latest","imagePullPolicy":"Always","name":"cp-jar","volumeMounts":[{"mountPath":"/libext","name":"cp-jar"}]}],"serviceAccountName":"jenkins-admin","volumes":[{"name":"jenkins-home","persistentVolumeClaim":{"claimName":"jenkinshomepvc"}},{"name":"maven-repository","persistentVolumeClaim":{"claimName":"mavenrepopvc"}},{"hostPath":{"path":"/usr/bin/docker"},"name":"docker"},{"hostPath":{"path":"/var/run/docker.sock"},"name":"docker-sock"},{"emptyDir":{},"name":"cp-jar"}]}}}}
+  creationTimestamp: "2020-12-31T02:40:47Z"
+  generation: 2
+  labels:
+    k8s-app: jenkins
+  managedFields:
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          .: {}
+          f:kubectl.kubernetes.io/last-applied-configuration: {}
+        f:labels:
+          .: {}
+          f:k8s-app: {}
+      f:spec:
+        f:progressDeadlineSeconds: {}
+        f:replicas: {}
+        f:revisionHistoryLimit: {}
+        f:selector:
+          f:matchLabels:
+            .: {}
+            f:k8s-app: {}
+        f:strategy:
+          f:rollingUpdate:
+            .: {}
+            f:maxSurge: {}
+            f:maxUnavailable: {}
+          f:type: {}
+        f:template:
+          f:metadata:
+            f:labels:
+              .: {}
+              f:k8s-app: {}
+          f:spec:
+            f:containers:
+              k:{"name":"jenkins"}:
+                .: {}
+                f:command: {}
+                f:env:
+                  .: {}
+                  k:{"name":"GIT_SSL_NO_VERIFY"}:
+                    .: {}
+                    f:name: {}
+                    f:value: {}
+                  k:{"name":"TZ"}:
+                    .: {}
+                    f:name: {}
+                    f:value: {}
+                f:image: {}
+                f:imagePullPolicy: {}
+                f:name: {}
+                f:ports:
+                  .: {}
+                  k:{"containerPort":8080,"protocol":"TCP"}:
+                    .: {}
+                    f:containerPort: {}
+                    f:protocol: {}
+                  k:{"containerPort":50000,"protocol":"TCP"}:
+                    .: {}
+                    f:containerPort: {}
+                    f:protocol: {}
+                f:resources: {}
+                f:terminationMessagePath: {}
+                f:terminationMessagePolicy: {}
+                f:volumeMounts:
+                  .: {}
+                  k:{"mountPath":"/opt/maven/repository"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+                  k:{"mountPath":"/temp/jenkinscerts"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+                  k:{"mountPath":"/usr/bin/docker"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+                  k:{"mountPath":"/var/jenkins_home"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+                  k:{"mountPath":"/var/run/docker.sock"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+            f:dnsPolicy: {}
+            f:initContainers:
+              .: {}
+              k:{"name":"cp-jar"}:
+                .: {}
+                f:command: {}
+                f:image: {}
+                f:imagePullPolicy: {}
+                f:name: {}
+                f:resources: {}
+                f:terminationMessagePath: {}
+                f:terminationMessagePolicy: {}
+                f:volumeMounts:
+                  .: {}
+                  k:{"mountPath":"/libext"}:
+                    .: {}
+                    f:mountPath: {}
+                    f:name: {}
+            f:restartPolicy: {}
+            f:schedulerName: {}
+            f:securityContext: {}
+            f:serviceAccount: {}
+            f:serviceAccountName: {}
+            f:terminationGracePeriodSeconds: {}
+            f:volumes:
+              .: {}
+              k:{"name":"cp-jar"}:
+                .: {}
+                f:emptyDir: {}
+                f:name: {}
+              k:{"name":"docker"}:
+                .: {}
+                f:hostPath:
+                  .: {}
+                  f:path: {}
+                  f:type: {}
+                f:name: {}
+              k:{"name":"docker-sock"}:
+                .: {}
+                f:hostPath:
+                  .: {}
+                  f:path: {}
+                  f:type: {}
+                f:name: {}
+              k:{"name":"jenkins-home"}:
+                .: {}
+                f:name: {}
+                f:persistentVolumeClaim:
+                  .: {}
+                  f:claimName: {}
+              k:{"name":"maven-repository"}:
+                .: {}
+                f:name: {}
+                f:persistentVolumeClaim:
+                  .: {}
+                  f:claimName: {}
+    manager: kubectl
+    operation: Update
+    time: "2021-01-08T02:47:57Z"
+  - apiVersion: apps/v1
+    fieldsType: FieldsV1
+    fieldsV1:
+      f:metadata:
+        f:annotations:
+          f:deployment.kubernetes.io/revision: {}
+      f:status:
+        f:availableReplicas: {}
+        f:conditions:
+          .: {}
+          k:{"type":"Available"}:
+            .: {}
+            f:lastTransitionTime: {}
+            f:lastUpdateTime: {}
+            f:message: {}
+            f:reason: {}
+            f:status: {}
+            f:type: {}
+          k:{"type":"Progressing"}:
+            .: {}
+            f:lastTransitionTime: {}
+            f:lastUpdateTime: {}
+            f:message: {}
+            f:reason: {}
+            f:status: {}
+            f:type: {}
+        f:observedGeneration: {}
+        f:readyReplicas: {}
+        f:replicas: {}
+        f:updatedReplicas: {}
+    manager: kube-controller-manager
+    operation: Update
+    time: "2021-01-08T02:48:00Z"
+  name: jenkins
+  namespace: jenkins
+  resourceVersion: "12742077"
+  selfLink: /apis/apps/v1/namespaces/jenkins/deployments/jenkins
+  uid: 1a3f1ff2-c3bc-4d6c-86b4-d8d3238a80a9
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      k8s-app: jenkins
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        k8s-app: jenkins
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - -c
+        - cp /temp/jenkinscerts/* /usr/local/openjdk-8/jre/lib/security/ && /usr/local/bin/jenkins.sh
+        env:
+        - name: TZ
+          value: Asia/Shanghai
+        - name: GIT_SSL_NO_VERIFY
+          value: "1"
+        image: 192.168.80.54:8081/library/jenkins/jenkins:v1.0.1_alpha
+        imagePullPolicy: IfNotPresent
+        name: jenkins
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 50000
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /var/jenkins_home
+          name: jenkins-home
+        - mountPath: /opt/maven/repository
+          name: maven-repository
+        - mountPath: /usr/bin/docker
+          name: docker
+        - mountPath: /var/run/docker.sock
+          name: docker-sock
+        - mountPath: /temp/jenkinscerts
+          name: cp-jar
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - command:
+        - sh
+        - /usr/local/s2i/run.sh
+        image: 192.168.80.54:8081/library/rf/jenkins-jssecacerts:latest
+        imagePullPolicy: Always
+        name: cp-jar
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /libext
+          name: cp-jar
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: jenkins-admin
+      serviceAccountName: jenkins-admin
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: jenkins-home
+        persistentVolumeClaim:
+          claimName: jenkinshomepvc
+      - name: maven-repository
+        persistentVolumeClaim:
+          claimName: mavenrepopvc
+      - hostPath:
+          path: /usr/bin/docker
+          type: ""
+        name: docker
+      - hostPath:
+          path: /var/run/docker.sock
+          type: ""
+        name: docker-sock
+      - emptyDir: {}
+        name: cp-jar
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2020-12-31T02:41:27Z"
+    lastUpdateTime: "2020-12-31T02:41:27Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2020-12-31T02:40:47Z"
+    lastUpdateTime: "2021-01-08T02:48:00Z"
+    message: ReplicaSet "jenkins-76db5c88f7" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 2
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1
